@@ -121,6 +121,11 @@ public class ControlTower : MonoBehaviour, IMouseInteractable
 
     public void ClickEnter()
     {
+        
+    }
+
+    public void ClickExit()
+    {
         var CurrentTowerName = Grid.CurrentTower != null ? Grid.CurrentTower.gameObject.name : "null";
         Debug.Log($"ControlTower-{gameObject.name} to Grid Cached Tower-{CurrentTowerName}");
 
@@ -130,9 +135,8 @@ public class ControlTower : MonoBehaviour, IMouseInteractable
         Grid.RequestMove(this);
     }
 
-    public void ClickExit()
+    public void ClickCancle()
     {
-        if (Grid.CurrentTower == this)
-            return;
+        meshes[0].material.color = OriginColor;
     }
 }

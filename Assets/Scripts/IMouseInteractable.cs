@@ -6,6 +6,8 @@ public interface IMouseInteractable
     public void HoverExit();
     public void ClickEnter();
     public void ClickExit();
+
+    public void ClickCancle();
 }
 
 public interface IDragInteractable

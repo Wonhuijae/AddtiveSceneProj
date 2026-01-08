@@ -62,4 +62,9 @@ public class MiniatureCaseButton : MonoBehaviour, IMouseInteractable
         //    material.color = OriginColor;
         //}
     }
+
+    public void ClickCancle()
+    {
+        
+    }
 }

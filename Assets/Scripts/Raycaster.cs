@@ -79,8 +79,25 @@ public class Raycaster : MonoBehaviour
         {
             if (prevClick != null)
             {
-                prevClick.ClickExit();
-                prevClick = null;
+                Ray finlaCheckRay = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+                RaycastHit finlaCheckHit;
+
+                // 최종 릴리즈 위치가 자기 자신이 아니면 무시
+                if (Physics.Raycast(finlaCheckRay, out finlaCheckHit, rayDistance, raycastMask))
+                {
+                    var finalInteractable = finlaCheckHit.collider.GetComponent<IMouseInteractable>();
+
+                    if (finalInteractable == prevClick)
+                    {
+                        prevClick.ClickExit();
+                    }
+                    else
+                    {
+                        prevClick.ClickCancle();
+                    }
+
+                    prevClick = null;
+                }
             }
 
             if (dragTarget != null)

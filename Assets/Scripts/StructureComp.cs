@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 public enum StructureType
 {
@@ -96,5 +97,10 @@ public class StructureComp : MonoBehaviour, IMouseInteractable
             Debug.Log($"StructureComp-{gameObject.name} Miniature Clicked");
             StructureParent.RequestMove(structID);
         }
+    }
+
+    public void ClickCancle()
+    {
+        meshes[0].material.SetColor("_BASE_COLOR", OriginColor);
     }
 }

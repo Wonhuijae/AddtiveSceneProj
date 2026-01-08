@@ -40,4 +40,12 @@ public class ClickForwarder : MonoBehaviour, IMouseInteractable
             Recevier.HoverExit();
         }
     }
+
+    public void ClickCancle()
+    {
+         if (Recevier != null)
+         {
+            Recevier.ClickCancle();
+         }
+    }
 }

@@ -159,4 +159,9 @@ public class Teleporter : MonoBehaviour, IMouseInteractable
     {
         mesh.material.color = originalColor;
     }
+
+    public void ClickCancle()
+    {
+        mesh.material.color = originalColor;
+    }
 }
