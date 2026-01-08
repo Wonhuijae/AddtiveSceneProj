@@ -20,6 +20,17 @@ public class CameraController : MonoBehaviour
     public bool isPopupOpened = false;
 
     public Transform mainCamera;
+    private Camera _mainCamera;
+
+    [Header("FOV")]
+    [SerializeField] private float zoomSpeed = 0.08f;
+    [SerializeField] private float minFOV = 35f;
+    [SerializeField] private float maxFOV = 90f;
+
+    [Header("Smoothing (optional)")]
+    [SerializeField] private bool smooth = true;
+    [SerializeField] private float smoothTime = 10f;
+    private float targetFov;
 
     [Header("Click Interactor")]
     [SerializeField] private Raycaster raycaster;
@@ -27,6 +38,7 @@ public class CameraController : MonoBehaviour
     [Header("Input Property")]
     public InputActionReference moveInputAction; // WASD 또는 방향키 이동 입력
     public InputActionReference settingAction; // 설정 창 열기/닫기
+    public InputActionReference scrollAction; // 줌 인/아웃
     public GameObject popup;
 
     [SerializeField] Transform HandlingPos;
@@ -36,7 +48,13 @@ public class CameraController : MonoBehaviour
 
     private void Awake()
     {
-        if (mainCamera == null) mainCamera = Camera.main.transform;
+        _mainCamera = Camera.main;
+         
+        if (mainCamera == null)
+        {
+            mainCamera = _mainCamera.transform;
+        }
+
         if (raycaster == null) raycaster = GetComponent<Raycaster>();
 
         characterController = GetComponent<CharacterController>();
@@ -50,15 +68,20 @@ public class CameraController : MonoBehaviour
     {
         moveInputAction.action.Enable();
         settingAction.action.Enable();
+        scrollAction.action.Enable();
 
-        settingAction.action.performed += OnSettingPerformed; 
+        settingAction.action.performed += OnSettingPerformed;
+        scrollAction.action.performed += OnScroll;
     }
 
     private void OnDisable()
     {
         moveInputAction.action.Disable();
         settingAction.action.Disable();
+        scrollAction.action.Disable();
+
         settingAction.action.performed -= OnSettingPerformed;
+        scrollAction.action.performed -= OnScroll;
     }
 
     private void Update()
@@ -77,6 +100,14 @@ public class CameraController : MonoBehaviour
         // 마우스 회전 처리
         // 왼쪽 마우스 버튼을 누르고 있을 때만 회전
         HandleMouseLook();
+
+        // 마우스 휠 줌 인/아웃
+        HandleFovZoom();
+    }
+
+    private void Start()
+    {
+        _mainCamera.fieldOfView = maxFOV;
     }
 
     public void PickUp(Transform model, Quaternion ViewAngle)
@@ -134,6 +165,36 @@ public class CameraController : MonoBehaviour
             pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
             mainCamera.localRotation = Quaternion.Euler(pitch, 0, 0);
         }
+    }
+
+    bool initFov = false;
+    private void HandleFovZoom()
+    {
+        if (!smooth || _mainCamera == null || Application.isFocused == false) return;
+
+        if (!initFov)
+        {
+            _mainCamera.fieldOfView = maxFOV;
+            initFov = true;
+            return;
+        }
+
+        float t = 1f - Mathf.Exp(-smoothTime * Time.deltaTime);
+        _mainCamera.fieldOfView = Mathf.Lerp(_mainCamera.fieldOfView, targetFov, t);
+    }
+
+    private void OnScroll(InputAction.CallbackContext ctx)
+    {
+        if (_mainCamera == null || Application.isFocused == false) return;
+
+        Vector2 scroll = ctx.ReadValue<Vector2>();
+        float delta = scroll.y;
+
+        targetFov -= delta * zoomSpeed;
+        targetFov = Mathf.Clamp(targetFov, minFOV, maxFOV);
+
+        if (!smooth)
+            _mainCamera.fieldOfView = targetFov;
     }
 
     private void OnSettingPerformed(InputAction.CallbackContext ctx)
