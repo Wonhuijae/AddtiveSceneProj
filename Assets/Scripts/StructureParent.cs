@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using DG.Tweening;
+using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -65,6 +66,8 @@ public class StructureParent : MonoBehaviour
     }
 
     // 미니어처 => 필드 이동 시엔 structID로 요청
+
+    [SerializeField] DOTweenPath fireTruckPath;
     public void RequestMove(int structID)
     {
         Debug.Log(parentRefs.Count);
@@ -74,6 +77,21 @@ public class StructureParent : MonoBehaviour
         var filedParent = GetStructureParent(StructureType.Field);
 
         filedParent?.FindFieldStruct(structID);
+
+        foreach (var parent in parentRefs.Values) 
+        {
+            parent.FireTruckAnim();
+        }
+    }
+
+    private void FireTruckAnim()
+    {
+        // Todo: 현장 사고 발생 이벤트
+        if (fireTruckPath != null)
+        {
+            fireTruckPath.gameObject.SetActive(true);
+            fireTruckPath?.DOPlay();
+        }
     }
 
     private void FindFieldStruct(int structID)

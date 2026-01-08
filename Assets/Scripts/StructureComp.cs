@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public enum StructureType
@@ -84,8 +85,7 @@ public class StructureComp : MonoBehaviour, IMouseInteractable
         if (structureType == StructureType.Field)
         {
             var CurrentTowerName = StructureParent.cachedStruct != null ? StructureParent.cachedStruct.gameObject.name : "null";
-            Debug.Log($"ControlTower-{gameObject.name} to Grid Cached Tower-{CurrentTowerName}");
-
+ 
             if (StructureParent.cachedStruct == this)
                 return;
 

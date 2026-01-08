@@ -168,7 +168,7 @@ public class CameraController : MonoBehaviour
 
         Vector3 dir = (target.position - transform.position).normalized;
 
-        // 1️⃣ Yaw 계산 (수평 방향만)
+        // Yaw 계산 (수평 방향만)
         Vector3 flatDir = new Vector3(dir.x, 0f, dir.z);
         if (flatDir.sqrMagnitude > 0.001f)
         {
@@ -176,7 +176,7 @@ public class CameraController : MonoBehaviour
             transform.rotation = yawRot;
         }
 
-        // 2️⃣ Pitch 계산
+        // Pitch 계산
         float angle = Vector3.SignedAngle(
             flatDir,
             dir,
