@@ -8,67 +8,67 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: m-ceiling
-    second: {fileID: 2100000, guid: 0a97b59d69bfcc44ca068ab3f8178299, type: 2}
+    second: {instanceID: 0}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: m-door
-    second: {fileID: 2100000, guid: 3b93a12ef6f212740a3df5663d4e6ade, type: 2}
+    second: {instanceID: 0}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: m-fence
-    second: {fileID: 2100000, guid: 9491d436a9eb798498cac3e35465d288, type: 2}
+    second: {instanceID: 0}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: m-floor
-    second: {fileID: 2100000, guid: 9286dca6c2cd311498b77e03e541dafe, type: 2}
+    second: {instanceID: 0}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: m-ground
-    second: {fileID: 2100000, guid: e26793c7c8598be4db16f736a13a54e9, type: 2}
+    second: {instanceID: 0}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: m-metal
-    second: {fileID: 2100000, guid: e64c50ee0aa276540b4c8d4c5d5d3295, type: 2}
+    second: {instanceID: 0}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: m-mountain
-    second: {fileID: 2100000, guid: fdbba7c2b4618c04fb8ad811b3b9832c, type: 2}
+    second: {instanceID: 0}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: m-river
-    second: {fileID: 2100000, guid: 08692bea1a95d114e9c55ed8316db627, type: 2}
+    second: {instanceID: 0}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: m-road
-    second: {fileID: 2100000, guid: 95ea51f355b081c42b81054fa457a0ef, type: 2}
+    second: {instanceID: 0}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: m-stair
-    second: {fileID: 2100000, guid: c80572640e88f3d4a8ce64f0de66cddb, type: 2}
+    second: {instanceID: 0}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: m-structure
-    second: {fileID: 2100000, guid: 33e9a1e65e73c884d88714749586b2f0, type: 2}
+    second: {instanceID: 0}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: m-table
-    second: {fileID: 2100000, guid: 566073881a59bed488c429daa3cdaadf, type: 2}
+    second: {instanceID: 0}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: m-wall
-    second: {fileID: 2100000, guid: 5b1526354a8f5c7419eba64c3f41aff2, type: 2}
+    second: {instanceID: 0}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
