@@ -9,6 +9,7 @@ public class Raycaster : MonoBehaviour
     [SerializeField] private IMouseInteractable prevClick;
     [SerializeField] private IDragInteractable dragTarget;
     [SerializeField] private LayerMask raycastMask;
+    [SerializeField] Transform TargetObj;
     public bool isDragging = false;
     private Mouse mouse;
 
@@ -36,8 +37,11 @@ public class Raycaster : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit hit;
 
+        // Debug.DrawRay(ray.origin, ray.direction * rayDistance, Color.red);
+
         if (Physics.Raycast(ray, out hit, rayDistance, raycastMask))
         {
+            // Debug.Log($"target Pos: {TargetObj.position} / hit Name: {hit.collider.gameObject.name}");
             IMouseInteractable currentInteractable = hit.collider.GetComponent<IMouseInteractable>();
             IDragInteractable currentDraggable = hit.collider.GetComponent<IDragInteractable>();
 
