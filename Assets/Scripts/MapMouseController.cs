@@ -8,11 +8,13 @@ public class MapMouseController : MonoBehaviour
     public InputActionReference zoomAction;     // Mouse Scroll
     public InputActionReference panAction;      // Mouse Delta
     public InputActionReference panButtonAction;// Right Click
+    public InputActionReference resetAction;    // Keyboard R
 
     public float zoomSpeed = 0.1f;
     public float minZoom = 0.5f;
     public float maxZoom = 3f;
     public float panSpeed = 0.01f;
+    Vector3 basePosition;
     Vector3 baseScale;
     float baseY;
 
@@ -21,7 +23,8 @@ public class MapMouseController : MonoBehaviour
     private void Awake()
     {
         baseScale = mapRoot.localScale;
-        baseY = mapRoot.position.y;
+        basePosition = mapRoot.position;
+        baseY = basePosition.y;
     }
 
     void OnEnable()
@@ -29,6 +32,9 @@ public class MapMouseController : MonoBehaviour
         zoomAction.action.Enable();
         panAction.action.Enable();
         panButtonAction.action.Enable();
+        resetAction.action.Enable();    
+
+        resetAction.action.performed += ctx => ResetMapPosition();
     }
 
     void OnDisable()
@@ -36,6 +42,9 @@ public class MapMouseController : MonoBehaviour
         zoomAction.action.Disable();
         panAction.action.Disable();
         panButtonAction.action.Disable();
+        resetAction.action.Disable();
+
+        resetAction.action.performed -= ctx => ResetMapPosition();
     }
 
     void Update()
@@ -61,19 +70,34 @@ public class MapMouseController : MonoBehaviour
         if (!panButtonAction.action.IsPressed())
             return;
 
+        if (targetZoom <= 1f)
+            return;
+
         Vector2 delta = panAction.action.ReadValue<Vector2>();
 
-        // 스크린 입력 → 로컬 평면 이동
-        Vector3 localMove = new Vector3(
-            -delta.x,
-            0f,
-            -delta.y
-        );
+        Camera cam = Camera.main;
 
-        // 확대 시 이동감 보정
+        // 카메라 기준 평면 방향 벡터
+        Vector3 right = cam.transform.right;
+        Vector3 forward = cam.transform.forward;
+
+        right.y = 0f;
+        forward.y = 0f;
+        right.Normalize();
+        forward.Normalize();
+
+        Vector3 move =
+            (right * delta.x) +
+            (forward * delta.y);
+
         float zoomFactor = 1f / targetZoom;
-
-        mapRoot.position += localMove * panSpeed * zoomFactor;
+        mapRoot.position += move * panSpeed * zoomFactor;
     }
 
+    void ResetMapPosition()
+    {
+        mapRoot.position = basePosition;
+        targetZoom = 1f;
+        mapRoot.localScale = baseScale;
+    }
 }
