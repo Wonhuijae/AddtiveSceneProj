@@ -29,11 +29,12 @@ public class Teleporter : MonoBehaviour, IMouseInteractable
     [SerializeField] Transform spawn;
     [SerializeField] ParticleSystem smoke;
     public static event Action<string> OnAddScene;
+    private string baseColorProp = "_BaseColor";
     private Color originalColor;
 
     private void Awake()
     {
-        originalColor = mesh.material.color;
+        originalColor = mesh.material.GetColor(baseColorProp);
         cc = Player.GetComponent<CameraController>();
 
         if (smoke == null)
@@ -147,21 +148,26 @@ public class Teleporter : MonoBehaviour, IMouseInteractable
     {
         smoke.Play();
         LoadField();
-        mesh.material.color = originalColor;
+        SetColor(originalColor);
     }
 
     public void HoverEnter()
     {
-        mesh.material.color = Color.green;
+        SetColor(Color.green);
     }
 
     public void HoverExit()
     {
-        mesh.material.color = originalColor;
+        SetColor(originalColor);
     }
 
     public void ClickCancle()
     {
-        mesh.material.color = originalColor;
+        SetColor(originalColor);
+    }
+
+    private void SetColor(Color color)
+    {
+        mesh.material.SetColor(baseColorProp, color);
     }
 }

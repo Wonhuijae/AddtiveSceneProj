@@ -16,6 +16,8 @@ public class StructureComp : MonoBehaviour, IMouseInteractable
     [SerializeField] Color HoverColor;
     [SerializeField] Color OriginColor;
     public Transform viewPoint;
+    private string baseColorProp = "_BaseColor";
+    private string baseColorPropMax = "_BASE_COLOR";
 
     // 최초 씬 로드 시에만 할당, 플레이어 등 오브젝트 접근용
     public static StructureParent StructureParent;
@@ -28,11 +30,13 @@ public class StructureComp : MonoBehaviour, IMouseInteractable
         if (meshes == null || meshes.Length == 0)
             meshes = GetComponentsInChildren<MeshRenderer>();
 
-        if (meshes.Length > 0)
+        var mat = meshes[0].material;
+        foreach(var props in mat.GetPropertyNames(MaterialPropertyType.Vector))
         {
-            OriginColor = meshes[0].material.GetColor("_BASE_COLOR");
+            Debug.Log($"StructureComp-{gameObject.name} Material Property Vector: {props}");
         }
 
+        SetOriginColor();
         HoverColor = StructureParent.GetStructureParent(structureType).HoverColor;
 
         var ID = gameObject.name.Split('-');
@@ -51,7 +55,7 @@ public class StructureComp : MonoBehaviour, IMouseInteractable
 
         if (StructureParent.cachedStruct == this)
             return;
-        meshes[0].material.SetColor("_BASE_COLOR", HoverColor);
+        SetColor(HoverColor);
     }
 
     public void HoverExit()
@@ -60,7 +64,8 @@ public class StructureComp : MonoBehaviour, IMouseInteractable
 
         if (StructureParent.cachedStruct == this)
             return;
-        meshes[0].material.SetColor("_BASE_COLOR", OriginColor);
+
+        SetColor(OriginColor);
     }
 
     public void ClickEnter()
@@ -79,7 +84,7 @@ public class StructureComp : MonoBehaviour, IMouseInteractable
     public void ClickExit()
     {
         if (!isFieldLoaded) return;
-        meshes[0].material.SetColor("_BASE_COLOR", OriginColor);
+        SetColor(OriginColor);
 
         // 실제 필드에서의 동작 : 다른 건물로 이동 요청
         if (structureType == StructureType.Field)
@@ -101,6 +106,45 @@ public class StructureComp : MonoBehaviour, IMouseInteractable
 
     public void ClickCancle()
     {
-        meshes[0].material.SetColor("_BASE_COLOR", OriginColor);
+        SetColor(OriginColor);
+    }
+
+    private void SetColor(Color color)
+    {
+        var baseMat = meshes[0].material;
+
+        if (baseMat.HasProperty(baseColorPropMax))
+        {
+            meshes[0].material.SetColor(baseColorPropMax, color);
+        }
+        else if (baseMat.HasProperty(baseColorProp))
+        {
+            meshes[0].material.SetColor(baseColorProp, color);
+        }
+        else
+        {
+            meshes[0].material.color = color;   
+        }
+    }
+
+    private void SetOriginColor()
+    {
+        if (meshes.Length > 0)
+        {
+            var baseMat = meshes[0].material;   
+
+            if (baseMat.HasProperty(baseColorPropMax))
+            {
+                OriginColor = baseMat.GetColor(baseColorPropMax);
+            }
+            else if (baseMat.HasProperty(baseColorProp))
+            {
+                OriginColor = baseMat.GetColor(baseColorProp);
+            }
+            else
+            {
+                OriginColor = baseMat.color;
+            }
+        }
     }
 }
