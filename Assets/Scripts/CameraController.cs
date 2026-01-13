@@ -38,7 +38,7 @@ public class CameraController : MonoBehaviour
 
     [Header("Input Property")]
     public InputActionReference moveInputAction; // WASD 또는 방향키 이동 입력
-    public InputActionReference settingAction; // 설정 창 열기/닫기
+    public InputActionReference returnAction; // 전시실로 돌아가기
     public InputActionReference scrollAction; // 줌 인/아웃
     public GameObject popup;
 
@@ -71,20 +71,20 @@ public class CameraController : MonoBehaviour
         mouse = Mouse.current;
 
         moveInputAction.action.Enable();
-        settingAction.action.Enable();
+        returnAction.action.Enable();
         scrollAction.action.Enable();
 
-        settingAction.action.performed += OnSettingPerformed;
+        returnAction.action.performed += OnReturnPerformed;
         scrollAction.action.performed += OnScroll;
     }
 
     private void OnDisable()
     {
         moveInputAction.action.Disable();
-        settingAction.action.Disable();
+        returnAction.action.Disable();
         scrollAction.action.Disable();
 
-        settingAction.action.performed -= OnSettingPerformed;
+        returnAction.action.performed -= OnReturnPerformed;
         scrollAction.action.performed -= OnScroll;
     }
 
@@ -200,7 +200,7 @@ public class CameraController : MonoBehaviour
             _mainCamera.fieldOfView = targetFov;
     }
 
-    private void OnSettingPerformed(InputAction.CallbackContext ctx)
+    private void OnReturnPerformed(InputAction.CallbackContext ctx)
     {
         // TogglePopup();
 

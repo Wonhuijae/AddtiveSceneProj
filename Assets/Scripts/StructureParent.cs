@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class StructureParent : MonoBehaviour
@@ -11,6 +12,7 @@ public class StructureParent : MonoBehaviour
     [SerializeField] GameObject triggerObject;
     static Dictionary<StructureType, StructureParent> parentRefs = new();
     [SerializeField] StructureType structureType;
+    public TextMeshProUGUI controlHelper;
 
     public static event Action<int> OnSwitchScene;
     public static StructureComp cachedStruct;
@@ -41,6 +43,11 @@ public class StructureParent : MonoBehaviour
 
         // 구조물 타입별로 객체 참조 저장
         parentRefs[structureType] = this;
+
+        if (structureType == StructureType.Field)
+        {
+            CameraController.OnResetPosition += BackToMiniature;
+        }
     }
 
     private void OnDestroy()
@@ -70,13 +77,14 @@ public class StructureParent : MonoBehaviour
     [SerializeField] DOTweenPath fireTruckPath;
     public void RequestMove(int structID)
     {
-        Debug.Log(parentRefs.Count);
-
         Debug.Log($"StructureParent: RequestMove to StructID={structID}");
         cachedStruct = null;
+        // 전시실 UI 종료
+        controlHelper.gameObject.SetActive(false);
         var filedParent = GetStructureParent(StructureType.Field);
 
         filedParent?.FindFieldStruct(structID);
+        filedParent.controlHelper.gameObject.SetActive(true);
 
         foreach (var parent in parentRefs.Values) 
         {
@@ -185,16 +193,14 @@ public class StructureParent : MonoBehaviour
         }
     }
 
-    public void BackToMiniature()
+    public void BackToMiniature(int Type)
     {
+        if (Type != (int)StructureType.Miniature) return;
+
         OnSwitchScene?.Invoke((int)StructureType.Miniature);
+        controlHelper.gameObject.SetActive(false);
 
         var miniParent = GetStructureParent(StructureType.Miniature);
-        miniParent.ReturnPlayer();
-    }
-
-    private void ReturnPlayer()
-    {
-        player.transform.SetLocalPositionAndRotation(SpawnPos.position, SpawnPos.rotation);
+        miniParent.controlHelper.gameObject.SetActive(true);
     }
 }

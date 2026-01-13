@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -30,11 +31,11 @@ public class StructureComp : MonoBehaviour, IMouseInteractable
         if (meshes == null || meshes.Length == 0)
             meshes = GetComponentsInChildren<MeshRenderer>();
 
-        var mat = meshes[0].material;
-        foreach(var props in mat.GetPropertyNames(MaterialPropertyType.Vector))
-        {
-            Debug.Log($"StructureComp-{gameObject.name} Material Property Vector: {props}");
-        }
+        //var mat = meshes[0].material;
+        //foreach(var props in mat.GetPropertyNames(MaterialPropertyType.Vector))
+        //{
+        //    Debug.Log($"StructureComp-{gameObject.name} Material Property Vector: {props}");
+        //}
 
         SetOriginColor();
         HoverColor = StructureParent.GetStructureParent(structureType).HoverColor;
