@@ -130,6 +130,7 @@ public class MapMouseController : MonoBehaviour
     }
 
     bool isMapActive;
+    [SerializeField] LayerMask layerMask;
     void UpdateMapActiveState()
     {
         if (!mouse.rightButton.isPressed)
@@ -139,7 +140,7 @@ public class MapMouseController : MonoBehaviour
         }
 
         Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
-        if (Physics.Raycast(ray, out var hit, 100f))
+        if (Physics.Raycast(ray, out var hit, 100f, layerMask))
         {
             isMapActive = hit.collider.GetComponent<GlobalBoxClipController>() != null;
         }
