@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class MapMouseController : MonoBehaviour
@@ -17,7 +18,8 @@ public class MapMouseController : MonoBehaviour
     Vector3 basePosition;
     Vector3 baseScale;
     float baseY;
-
+    private Mouse mouse;
+    private Camera mainCamera;
     float targetZoom = 1f;
 
     private void Awake()
@@ -25,10 +27,13 @@ public class MapMouseController : MonoBehaviour
         baseScale = mapRoot.localScale;
         basePosition = mapRoot.position;
         baseY = basePosition.y;
+        mainCamera = Camera.main;
     }
 
     void OnEnable()
     {
+        mouse = Mouse.current;
+
         zoomAction.action.Enable();
         panAction.action.Enable();
         panButtonAction.action.Enable();
@@ -49,12 +54,29 @@ public class MapMouseController : MonoBehaviour
 
     void Update()
     {
+        if (mouse == null || mainCamera == null)
+            return;
+
+        if (IsPointerOverUI())
+            return;
+
+        UpdateMapActiveState();
+
+        if (!isMapActive)
+            return;
+
         HandleZoom();
-        HandlePan();
+
+        if (panButtonAction.action.IsPressed())
+        {
+            HandlePan();
+        }
     }
 
     void HandleZoom()
     {
+        if (!mouse.rightButton.isPressed) return;
+
         float scroll = zoomAction.action.ReadValue<Vector2>().y;
         if (Mathf.Abs(scroll) > 0.01f)
         {
@@ -67,7 +89,7 @@ public class MapMouseController : MonoBehaviour
 
     void HandlePan()
     {
-        if (!panButtonAction.action.IsPressed())
+        if (!panButtonAction.action.IsPressed() || !mouse.rightButton.isPressed)
             return;
 
         if (targetZoom <= 1f)
@@ -97,7 +119,33 @@ public class MapMouseController : MonoBehaviour
     void ResetMapPosition()
     {
         mapRoot.position = basePosition;
-        targetZoom = 1f;
         mapRoot.localScale = baseScale;
+        targetZoom = 1f;
+    }
+
+    bool IsPointerOverUI()
+    {
+        return EventSystem.current != null &&
+               EventSystem.current.IsPointerOverGameObject();
+    }
+
+    bool isMapActive;
+    void UpdateMapActiveState()
+    {
+        if (!mouse.rightButton.isPressed)
+        {
+            isMapActive = false;
+            return;
+        }
+
+        Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
+        if (Physics.Raycast(ray, out var hit, 100f))
+        {
+            isMapActive = hit.collider.GetComponent<GlobalBoxClipController>() != null;
+        }
+        else
+        {
+            isMapActive = false;
+        }
     }
 }

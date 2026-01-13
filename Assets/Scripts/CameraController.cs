@@ -34,6 +34,7 @@ public class CameraController : MonoBehaviour
 
     [Header("Click Interactor")]
     [SerializeField] private Raycaster raycaster;
+    private Mouse mouse;
 
     [Header("Input Property")]
     public InputActionReference moveInputAction; // WASD 또는 방향키 이동 입력
@@ -60,18 +61,21 @@ public class CameraController : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         popup.SetActive(false);
         isPopupOpened = false;
+        targetFov = _mainCamera.fieldOfView;
 
       //  DontDestroyOnLoad(gameObject);
 }
 
     private void OnEnable()
     {
+        mouse = Mouse.current;
+
         moveInputAction.action.Enable();
         settingAction.action.Enable();
         scrollAction.action.Enable();
 
         settingAction.action.performed += OnSettingPerformed;
-        // scrollAction.action.performed += OnScroll;
+        scrollAction.action.performed += OnScroll;
     }
 
     private void OnDisable()
@@ -81,7 +85,7 @@ public class CameraController : MonoBehaviour
         scrollAction.action.Disable();
 
         settingAction.action.performed -= OnSettingPerformed;
-        // scrollAction.action.performed -= OnScroll;
+        scrollAction.action.performed -= OnScroll;
     }
 
     private void Update()
@@ -148,9 +152,9 @@ public class CameraController : MonoBehaviour
             return;
         }
 
-        if (Mouse.current.leftButton.isPressed && !raycaster.isDragging)
+        if (mouse.leftButton.isPressed && !raycaster.isDragging)
         {
-            Vector2 delta = Mouse.current.delta.ReadValue(); // 이번 프레임 마우스 이동량
+            Vector2 delta = mouse.delta.ReadValue(); // 이번 프레임 마우스 이동량
             float speed = delta.magnitude;                   // 이동 속도(픽셀 변화량)
 
             // 속도 기반 가속 생성 (1.0 ~ 3.0 사이에서 자연스럽게 증가)
@@ -185,11 +189,10 @@ public class CameraController : MonoBehaviour
 
     private void OnScroll(InputAction.CallbackContext ctx)
     {
-        if (_mainCamera == null || Application.isFocused == false) return;
+        if (_mainCamera == null || Application.isFocused == false || mouse.rightButton.isPressed) return;
 
         Vector2 scroll = ctx.ReadValue<Vector2>();
         float delta = scroll.y;
-
         targetFov -= delta * zoomSpeed;
         targetFov = Mathf.Clamp(targetFov, minFOV, maxFOV);
 
